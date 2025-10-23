@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import 'signup_screen.dart';
 
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
-  bool _rememberMe = false;
+  bool _obscureConfirm = true;
 
-  void _login() async {
+  void _signup() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-
-      await Future.delayed(const Duration(seconds: 2)); // Mock API delay
+      await Future.delayed(const Duration(seconds: 2)); // Mock signup delay
 
       setState(() => _isLoading = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Successful!')),
+        const SnackBar(content: Text('Account Created Successfully!')),
       );
 
       Navigator.pushReplacement(
@@ -64,31 +64,53 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // App Logo
+                      // Logo
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: const Color(0xFF27AE60).withOpacity(0.2),
                         child: const Icon(
-                          Icons.local_dining_rounded,
+                          Icons.eco_rounded,
                           color: Color(0xFF27AE60),
                           size: 45,
                         ),
                       ),
                       const SizedBox(height: 16),
                       const Text(
-                        "FitEats",
+                        "Create Account",
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF27AE60),
                         ),
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        "Healthy eating starts here 🍃",
+                        "Join FitEats and start your healthy journey 🌱",
                         style: TextStyle(fontSize: 15, color: Colors.black54),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 28),
+
+                      // Name Field
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          labelText: "Full Name",
+                          prefixIcon: const Icon(Icons.person_outline),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter your name";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
 
                       // Email Field
                       TextFormField(
@@ -122,8 +144,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                           labelText: "Password",
                           prefixIcon: const Icon(Icons.lock_outline),
-                          filled: true,
-                          fillColor: Colors.grey[100],
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword
@@ -134,13 +154,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () =>
                                 setState(() => _obscurePassword = !_obscurePassword),
                           ),
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter your password";
+                            return "Please enter a password";
                           }
                           if (value.length < 6) {
                             return "Password must be at least 6 characters";
@@ -148,41 +170,45 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
 
-                      // Remember me + Forgot password
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                activeColor: const Color(0xFF27AE60),
-                                value: _rememberMe,
-                                onChanged: (val) =>
-                                    setState(() => _rememberMe = val ?? false),
-                              ),
-                              const Text("Remember me"),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // TODO: Forgot password screen
-                            },
-                            child: const Text(
-                              "Forgot Password?",
-                              style: TextStyle(color: Color(0xFF27AE60)),
+                      // Confirm Password Field
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _obscureConfirm,
+                        decoration: InputDecoration(
+                          labelText: "Confirm Password",
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirm
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: const Color(0xFF27AE60),
                             ),
+                            onPressed: () =>
+                                setState(() => _obscureConfirm = !_obscureConfirm),
                           ),
-                        ],
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value != _passwordController.text) {
+                            return "Passwords do not match";
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
 
-                      // Login Button
+                      // Signup Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : _login,
+                          onPressed: _isLoading ? null : _signup,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF27AE60),
                             shape: RoundedRectangleBorder(
@@ -194,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? const CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2)
                               : const Text(
-                            "Login",
+                            "Sign Up",
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -203,19 +229,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 16),
 
-                      // Signup Link
+                      // Already have account
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Don’t have an account? "),
+                          const Text("Already have an account? "),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/signup');
+                              Navigator.pop(context);
                             },
                             child: const Text(
-                              "Sign Up",
+                              "Login",
                               style: TextStyle(
                                 color: Color(0xFFF39C12),
                                 fontWeight: FontWeight.bold,

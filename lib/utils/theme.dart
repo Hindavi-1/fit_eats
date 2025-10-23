@@ -9,14 +9,18 @@ class AppColors {
 }
 
 final ThemeData appTheme = ThemeData(
+  useMaterial3: true,
+  fontFamily: 'Poppins',
   primaryColor: AppColors.primaryGreen,
   scaffoldBackgroundColor: AppColors.background,
+
   colorScheme: ColorScheme.fromSeed(
     seedColor: AppColors.primaryGreen,
     primary: AppColors.primaryGreen,
     secondary: AppColors.tealAccent,
     background: AppColors.background,
   ),
+
   appBarTheme: const AppBarTheme(
     backgroundColor: AppColors.primaryGreen,
     foregroundColor: Colors.white,
@@ -27,30 +31,52 @@ final ThemeData appTheme = ThemeData(
       color: Colors.white,
     ),
   ),
+
   textTheme: const TextTheme(
     bodyLarge: TextStyle(color: AppColors.darkText, fontSize: 16),
     bodyMedium: TextStyle(color: AppColors.darkText, fontSize: 14),
-    titleLarge: TextStyle(color: AppColors.primaryGreen, fontWeight: FontWeight.bold),
+    titleLarge: TextStyle(
+      color: AppColors.primaryGreen,
+      fontWeight: FontWeight.bold,
+    ),
   ),
+
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.primaryGreen,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     ),
   ),
+
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: Colors.white,
-    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-    border: OutlineInputBorder(
+    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+    border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(10)),
       borderSide: BorderSide(color: AppColors.lightGray),
     ),
-    focusedBorder: OutlineInputBorder(
+    focusedBorder: const OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(10)),
       borderSide: BorderSide(color: AppColors.primaryGreen, width: 2),
     ),
+  ),
+
+  cardTheme: CardThemeData(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    elevation: 8,
+    shadowColor: Colors.black26,
+    color: Colors.white,
+  ),
+
+  snackBarTheme: SnackBarThemeData(
+    backgroundColor: AppColors.tealAccent,
+    contentTextStyle: const TextStyle(color: Colors.white),
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   ),
 );
