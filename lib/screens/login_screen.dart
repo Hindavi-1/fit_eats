@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // 🔹 Actual Firebase login logic
+  // 🔹 Actual Firebase login logic
   void _login() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -44,26 +45,46 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
+
       switch (e.code) {
         case 'user-not-found':
-          errorMessage = 'No user found for that email.';
+          errorMessage = 'No account found for this email. Please sign up first.';
           break;
         case 'wrong-password':
-          errorMessage = 'Incorrect password.';
+          errorMessage = 'The password you entered is incorrect.';
           break;
         case 'invalid-email':
-          errorMessage = 'Invalid email format.';
+          errorMessage = 'Please enter a valid email address.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This account has been disabled. Contact support.';
+          break;
+        case 'too-many-requests':
+          errorMessage = 'Too many failed attempts. Try again later.';
+          break;
+        case 'network-request-failed':
+          errorMessage = 'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = 'Login failed: ${e.message}';
+          errorMessage = 'Login failed. Please try again later.';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(10),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Unexpected error: $e')),
+        SnackBar(
+          content: Text('Unexpected error occurred. Please try again.'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(10),
+        ),
       );
     } finally {
       setState(() => _isLoading = false);

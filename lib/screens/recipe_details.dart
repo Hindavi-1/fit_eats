@@ -1,202 +1,68 @@
 import 'package:flutter/material.dart';
 import '../utils/theme.dart';
 
-class RecipeDetailsScreen extends StatelessWidget {
-  final String recipeName;
+class RecipeDetailScreen extends StatelessWidget {
+  final Map<String, dynamic> recipe;
 
-  const RecipeDetailsScreen({super.key, required this.recipeName});
+  const RecipeDetailScreen({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
+    final title = recipe['title'] ?? 'Unknown Recipe';
+    final image = recipe['image'] ?? '';
+    final calories =
+        recipe['nutrition']?['nutrients']?.firstWhere(
+                (n) => n['name'] == 'Calories',
+            orElse: () => {'amount': 'N/A'})['amount'] ?? 'N/A';
+    final instructions = recipe['instructions'] ?? 'No instructions available.';
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(recipeName),
-        centerTitle: true,
-        backgroundColor: AppColors.primaryGreen,
+        title: Text(title),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Recipe Image Banner
-            Container(
-              height: 220,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
-                  ),
+            Hero(
+              tag: recipe['id'].toString(),
+              child: ClipRRect(
+                borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(24)),
+                child: Image.network(
+                  image,
+                  width: double.infinity,
+                  height: 250,
                   fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                color: Colors.black.withOpacity(0.3),
-                alignment: Alignment.bottomLeft,
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  recipeName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  errorBuilder: (_, __, ___) =>
+                      Container(height: 250, color: Colors.grey[300]),
                 ),
               ),
             ),
-
-            // Nutrition Info
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primaryGreen, AppColors.tealAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    _NutritionItem(label: "Calories", value: "250 kcal"),
-                    _NutritionItem(label: "Protein", value: "12 g"),
-                    _NutritionItem(label: "Carbs", value: "30 g"),
-                    _NutritionItem(label: "Fat", value: "8 g"),
-                  ],
-                ),
-              ),
-            ),
-
-            // Ingredients
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                "Ingredients",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.darkText,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            _buildIngredientsList(),
-
             const SizedBox(height: 16),
-
-            // Preparation Steps
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                "Preparation",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.darkText,
-                ),
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
             ),
             const SizedBox(height: 8),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                "1. Wash and chop all vegetables.\n"
-                    "2. Mix them in a bowl with olive oil and spices.\n"
-                    "3. Grill the chicken and add it on top.\n"
-                    "4. Serve fresh with a drizzle of lemon juice.",
-                style: TextStyle(fontSize: 16, color: AppColors.darkText),
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text("Calories: $calories kcal",
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
-
-            const SizedBox(height: 24),
-
-            // Add to Favorites Button
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Added to Favorites! ❤️"),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.favorite_border),
-                label: const Text(
-                  "Add to Favorites",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.tealAccent,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text("Instructions",
+                  style: Theme.of(context).textTheme.bodyLarge),
             ),
-            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(instructions, style: const TextStyle(fontSize: 14)),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildIngredientsList() {
-    final ingredients = [
-      "1 cup chopped spinach",
-      "½ avocado",
-      "100g grilled chicken",
-      "1 tbsp olive oil",
-      "Salt and pepper to taste",
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: ingredients
-            .map(
-              (item) => ListTile(
-            leading: const Icon(Icons.check_circle_outline,
-                color: AppColors.primaryGreen),
-            title: Text(item,
-                style: const TextStyle(color: AppColors.darkText)),
-            contentPadding: EdgeInsets.zero,
-          ),
-        )
-            .toList(),
-      ),
-    );
-  }
-}
-
-class _NutritionItem extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _NutritionItem({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white70, fontSize: 13),
-        ),
-      ],
     );
   }
 }

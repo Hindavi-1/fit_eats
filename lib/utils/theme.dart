@@ -3,9 +3,25 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color primaryGreen = Color(0xFF27AE60);
   static const Color tealAccent = Color(0xFF1ABC9C);
+  static const Color warmOrange = Color(0xFFF39C12);
   static const Color background = Color(0xFFF9FAFB);
   static const Color darkText = Color(0xFF1E293B);
   static const Color lightGray = Color(0xFFB0BEC5);
+  static const Color white = Colors.white;
+}
+
+class AppGradients {
+  static const LinearGradient greenMint = LinearGradient(
+    colors: [AppColors.primaryGreen, AppColors.tealAccent],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient orangeGlow = LinearGradient(
+    colors: [AppColors.warmOrange, AppColors.tealAccent],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
 
 final ThemeData appTheme = ThemeData(
@@ -13,6 +29,8 @@ final ThemeData appTheme = ThemeData(
   fontFamily: 'Poppins',
   primaryColor: AppColors.primaryGreen,
   scaffoldBackgroundColor: AppColors.background,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  splashFactory: InkRipple.splashFactory,
 
   colorScheme: ColorScheme.fromSeed(
     seedColor: AppColors.primaryGreen,
@@ -32,12 +50,43 @@ final ThemeData appTheme = ThemeData(
     ),
   ),
 
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    selectedItemColor: AppColors.primaryGreen,
+    unselectedItemColor: AppColors.lightGray,
+    backgroundColor: Colors.white,
+    type: BottomNavigationBarType.fixed,
+    showSelectedLabels: true,
+    showUnselectedLabels: false,
+    elevation: 12,
+  ),
+
   textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: AppColors.darkText, fontSize: 16),
-    bodyMedium: TextStyle(color: AppColors.darkText, fontSize: 14),
-    titleLarge: TextStyle(
-      color: AppColors.primaryGreen,
+    headlineLarge: TextStyle(
+      fontSize: 28,
       fontWeight: FontWeight.bold,
+      color: AppColors.darkText,
+    ),
+    headlineMedium: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
+      color: AppColors.darkText,
+    ),
+    titleLarge: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      color: AppColors.primaryGreen,
+    ),
+    bodyLarge: TextStyle(
+      fontSize: 16,
+      color: AppColors.darkText,
+    ),
+    bodyMedium: TextStyle(
+      fontSize: 14,
+      color: AppColors.darkText,
+    ),
+    labelSmall: TextStyle(
+      fontSize: 12,
+      color: AppColors.lightGray,
     ),
   ),
 
@@ -45,6 +94,8 @@ final ThemeData appTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.primaryGreen,
       foregroundColor: Colors.white,
+      elevation: 4,
+      shadowColor: AppColors.primaryGreen.withOpacity(0.3),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
@@ -68,8 +119,8 @@ final ThemeData appTheme = ThemeData(
 
   cardTheme: CardThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 8,
-    shadowColor: Colors.black26,
+    elevation: 6,
+    shadowColor: Colors.black12,
     color: Colors.white,
   ),
 

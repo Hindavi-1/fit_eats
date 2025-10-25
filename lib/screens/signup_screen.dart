@@ -30,10 +30,14 @@ class _SignupScreenState extends State<SignupScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      await _auth.createUserWithEmailAndPassword(
+      // Create user
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // Optional: Update display name
+      await userCredential.user?.updateDisplayName(_nameController.text.trim());
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,23 +49,42 @@ class _SignupScreenState extends State<SignupScreen> {
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      String message;
+      // Handle all Firebase signup errors
+      String message = "Signup failed. Please try again.";
+
       switch (e.code) {
         case 'email-already-in-use':
-          message = 'This email is already registered.';
+          message = "This email is already registered.";
           break;
         case 'invalid-email':
-          message = 'Invalid email format.';
+          message = "Invalid email format.";
+          break;
+        case 'operation-not-allowed':
+          message = "Email/password accounts are not enabled.";
           break;
         case 'weak-password':
-          message = 'Password is too weak (min 6 characters).';
+          message = "Password is too weak (min 6 characters).";
+          break;
+        case 'network-request-failed':
+          message = "Network error. Check your internet connection.";
           break;
         default:
-          message = 'Signup failed. ${e.message}';
+          message = e.message ?? message;
       }
+
+      // Print for debug
+      print("Firebase signup error: ${e.code} | ${e.message}");
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
+    } catch (e) {
+      print("Unexpected error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("An unexpected error occurred. Please try again."),
+          backgroundColor: Colors.red,
+        ),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -95,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Logo & Title (keep existing UI)
+                      // Logo & Title
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: const Color(0xFF27AE60).withOpacity(0.2),
@@ -114,7 +137,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       const SizedBox(height: 28),
 
-                      // Name, Email, Password, Confirm Password fields (UI unchanged)
+                      // Name Field
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
@@ -127,6 +150,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         validator: (value) => value!.isEmpty ? "Please enter your name" : null,
                       ),
                       const SizedBox(height: 16),
+
+                      // Email Field
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -144,6 +169,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
+
+                      // Password Field
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
@@ -165,6 +192,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
+
+                      // Confirm Password Field
                       TextFormField(
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirm,
