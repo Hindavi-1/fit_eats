@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/theme.dart';
+import '../services/api_service.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
   final Map<String, dynamic> recipe;
@@ -9,7 +9,7 @@ class RecipeDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = recipe['title'] ?? 'Unknown Recipe';
-    final image = recipe['image'] ?? '';
+    final image = ApiService.imageUrl(recipe['image'] ?? '');
     final calories =
         recipe['nutrition']?['nutrients']?.firstWhere(
                 (n) => n['name'] == 'Calories',
@@ -17,9 +17,7 @@ class RecipeDetailScreen extends StatelessWidget {
     final instructions = recipe['instructions'] ?? 'No instructions available.';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: Text(title)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,8 +25,7 @@ class RecipeDetailScreen extends StatelessWidget {
             Hero(
               tag: recipe['id'].toString(),
               child: ClipRRect(
-                borderRadius:
-                const BorderRadius.vertical(bottom: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
                 child: Image.network(
                   image,
                   width: double.infinity,
@@ -53,8 +50,7 @@ class RecipeDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text("Instructions",
-                  style: Theme.of(context).textTheme.bodyLarge),
+              child: Text("Instructions", style: Theme.of(context).textTheme.bodyLarge),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),

@@ -55,7 +55,8 @@ plugins {
 android {
     namespace = "com.example.fit_eats"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+//    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     defaultConfig {
         applicationId = "com.example.fit_eats"
