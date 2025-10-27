@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tabs/home_tab.dart';
 import '../../utils/theme.dart';
+import 'tabs/profile_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen>
     Center(child: Text('Favorites Tab', style: TextStyle(fontSize: 24))),
     Center(child: Text('Meal Plan Tab', style: TextStyle(fontSize: 24))),
     Center(child: Text('Profile Tab', style: TextStyle(fontSize: 24))),
+    
   ];
 
   late AnimationController _controller;

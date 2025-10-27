@@ -9,11 +9,11 @@ class RecipeDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = recipe['title'] ?? 'Unknown Recipe';
-    final image = ApiService.imageUrl(recipe['image'] ?? '');
-    final calories =
-        recipe['nutrition']?['nutrients']?.firstWhere(
-                (n) => n['name'] == 'Calories',
-            orElse: () => {'amount': 'N/A'})['amount'] ?? 'N/A';
+    final image = ApiService.getImageUrl(recipe['image'] ?? '');
+    final calories = recipe['calories']?.toString() ?? 'N/A';
+    final readyInMinutes = recipe['readyInMinutes']?.toString() ?? 'N/A';
+    final servings = recipe['servings']?.toString() ?? 'N/A';
+    final ingredients = recipe['ingredients'] as List<dynamic>? ?? [];
     final instructions = recipe['instructions'] ?? 'No instructions available.';
 
     return Scaffold(
@@ -25,7 +25,8 @@ class RecipeDetailScreen extends StatelessWidget {
             Hero(
               tag: recipe['id'].toString(),
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
+                borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(24)),
                 child: Image.network(
                   image,
                   width: double.infinity,
@@ -44,8 +45,23 @@ class RecipeDetailScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text("Calories: $calories kcal",
+              child: Text(
+                  "Calories: $calories kcal | Ready in: $readyInMinutes mins | Servings: $servings",
                   style: Theme.of(context).textTheme.bodyMedium),
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text("Ingredients", style: Theme.of(context).textTheme.bodyLarge),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: ingredients
+                    .map((i) => Text("• $i", style: const TextStyle(fontSize: 14)))
+                    .toList(),
+              ),
             ),
             const SizedBox(height: 16),
             Padding(
